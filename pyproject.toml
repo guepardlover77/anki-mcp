@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "anki-mcp"
+version = "0.1.0"
+description = "Serveur MCP Python pour gérer Anki depuis Claude avec génération automatique de flashcards"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Anki MCP", email = "contact@example.com" }
+]
+keywords = ["anki", "mcp", "flashcards", "claude", "ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+]
+
+dependencies = [
+    "mcp>=1.2.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+pdf = ["pymupdf>=1.24"]
+web = ["beautifulsoup4>=4.12", "lxml>=5.0"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+all = ["anki-mcp[pdf,web,dev]"]
+
+[project.scripts]
+anki-mcp = "anki_mcp.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/user/anki-mcp"
+Documentation = "https://github.com/user/anki-mcp#readme"
+Repository = "https://github.com/user/anki-mcp"
+Issues = "https://github.com/user/anki-mcp/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/anki_mcp"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --cov=anki_mcp --cov-report=term-missing"
