@@ -4,7 +4,9 @@
       "Bash(python -c \"import ast; import sys; files = [''src/anki_mcp/__init__.py'', ''src/anki_mcp/server.py'', ''src/anki_mcp/config.py'', ''src/anki_mcp/client/base.py'', ''src/anki_mcp/client/actions.py'', ''src/anki_mcp/tools/deck.py'', ''src/anki_mcp/tools/note.py'']; errors = []; [errors.append\\(f''{f}: {e}''\\) for f in files for e in [None] if not \\(lambda x: \\(ast.parse\\(open\\(x\\).read\\(\\)\\), True\\)[1] if True else False\\)\\(f\\) or True]; print\\(''Syntax OK'' if not errors else errors\\)\")",
       "Bash(python -m py_compile:*)",
       "Bash(python -m anki_mcp:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(initialized\" errors in MCP tools.\n\nChanges:\n- Add _ensure_initialized\\(\\) method for lazy loading\n- Initialize context automatically on first property access\n- Remove dependency on explicit async initialization\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

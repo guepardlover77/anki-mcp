@@ -16,12 +16,19 @@ class AnkiContext:
     def __init__(self) -> None:
         self._client: AnkiConnectClient | None = None
         self._actions: AnkiActions | None = None
+        self._initialized = False
+
+    def _ensure_initialized(self) -> None:
+        """Ensure the context is initialized (lazy initialization)."""
+        if not self._initialized:
+            settings = get_settings()
+            self._client = AnkiConnectClient(settings)
+            self._actions = AnkiActions(self._client)
+            self._initialized = True
 
     async def initialize(self) -> None:
         """Initialize the Anki client."""
-        settings = get_settings()
-        self._client = AnkiConnectClient(settings)
-        self._actions = AnkiActions(self._client)
+        self._ensure_initialized()
 
     async def cleanup(self) -> None:
         """Cleanup resources."""
@@ -31,6 +38,7 @@ class AnkiContext:
     @property
     def client(self) -> AnkiConnectClient:
         """Get the AnkiConnect client."""
+        self._ensure_initialized()
         if self._client is None:
             raise RuntimeError("AnkiContext not initialized")
         return self._client
@@ -38,6 +46,7 @@ class AnkiContext:
     @property
     def actions(self) -> AnkiActions:
         """Get the AnkiActions instance."""
+        self._ensure_initialized()
         if self._actions is None:
             raise RuntimeError("AnkiContext not initialized")
         return self._actions
