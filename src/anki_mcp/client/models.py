@@ -50,6 +50,8 @@ class NoteField(BaseModel):
 class NoteInput(BaseModel):
     """Input model for creating a note."""
 
+    model_config = {"populate_by_name": True, "protected_namespaces": ()}
+
     deck_name: str = Field(..., alias="deckName", description="Target deck name")
     model_name: str = Field(..., alias="modelName", description="Note type/model name")
     fields: dict[str, str] = Field(..., description="Field name to value mapping")
@@ -67,11 +69,11 @@ class NoteInput(BaseModel):
         default=None, description="Additional options like allowDuplicate"
     )
 
-    model_config = {"populate_by_name": True}
-
 
 class NoteInfo(BaseModel):
     """Information about an existing note."""
+
+    model_config = {"populate_by_name": True, "protected_namespaces": ()}
 
     note_id: int = Field(..., alias="noteId")
     model_name: str = Field(..., alias="modelName")
@@ -79,14 +81,14 @@ class NoteInfo(BaseModel):
     fields: dict[str, NoteField] = Field(default_factory=dict)
     cards: list[int] = Field(default_factory=list, description="Card IDs for this note")
 
-    model_config = {"populate_by_name": True}
-
 
 # ============ Card Models ============
 
 
 class CardInfo(BaseModel):
     """Information about a card."""
+
+    model_config = {"populate_by_name": True, "protected_namespaces": ()}
 
     card_id: int = Field(..., alias="cardId")
     note_id: int = Field(..., alias="noteId")
@@ -104,8 +106,6 @@ class CardInfo(BaseModel):
     reps: int = 0
     lapses: int = 0
     left: int = 0
-
-    model_config = {"populate_by_name": True}
 
 
 # ============ Deck Models ============
@@ -165,13 +165,13 @@ class ModelFieldInfo(BaseModel):
 class ModelInfo(BaseModel):
     """Information about a note model/type."""
 
+    model_config = {"populate_by_name": True, "protected_namespaces": ()}
+
     name: str
     model_id: int = Field(default=0, alias="id")
     fields: list[str] = Field(default_factory=list, alias="flds")
     css: str = ""
     templates: list[dict[str, Any]] = Field(default_factory=list, alias="tmpls")
-
-    model_config = {"populate_by_name": True}
 
 
 # ============ Review Models ============
