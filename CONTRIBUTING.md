@@ -1,6 +1,6 @@
 # Contributing to Anki MCP
 
-Thank you for your interest in contributing! 🎉
+Thank you for your interest in contributing!
 
 ## Quick Start
 
@@ -35,22 +35,22 @@ pytest
 ## Areas for Contribution
 
 ### Priority Features (Phase 4)
-- [ ] PDF extraction for flashcard generation
-- [ ] Web scraping for content import
-- [ ] Advanced cloze deletion algorithms
-- [ ] Card improvement suggestions with AI
+- PDF extraction for flashcard generation
+- Web scraping for content import
+- Advanced cloze deletion algorithms
+- Card improvement suggestions with AI
 
 ### Additional Tools
-- [ ] More statistics visualizations
-- [ ] Spaced repetition algorithms
-- [ ] Integration with other SRS systems
-- [ ] Export to more formats
+- More statistics visualizations
+- Spaced repetition algorithms
+- Integration with other SRS systems
+- Export to more formats
 
 ### Documentation
-- [ ] Tutorial videos
-- [ ] Example use cases
-- [ ] API documentation
-- [ ] Translations
+- Tutorial videos
+- Example use cases
+- API documentation
+- Translations
 
 ## Code Guidelines
 
