@@ -131,12 +131,22 @@ def register_import_export_tools(mcp: FastMCP) -> None:
             # Add notes
             note_ids = await actions.add_notes(notes_to_add)
             successful = [nid for nid in note_ids if nid is not None]
+            failed_count = len(notes_to_add) - len(successful)
+
+            if len(successful) == 0:
+                return {
+                    "success": False,
+                    "error": f"Failed to import all {failed_count} notes. Check that the deck exists and the model name is correct.",
+                    "total_found": len(notes_to_add),
+                    "imported": 0,
+                    "failed": failed_count,
+                }
 
             return {
-                "success": True,
+                "success": len(successful) > 0,
                 "total_found": len(notes_to_add),
                 "imported": len(successful),
-                "failed": len(notes_to_add) - len(successful),
+                "failed": failed_count,
                 "note_ids": successful,
                 "deck": deck_name,
             }
@@ -222,12 +232,22 @@ def register_import_export_tools(mcp: FastMCP) -> None:
             # Add notes
             note_ids = await actions.add_notes(notes_to_add)
             successful = [nid for nid in note_ids if nid is not None]
+            failed_count = len(notes_to_add) - len(successful)
+
+            if len(successful) == 0:
+                return {
+                    "success": False,
+                    "error": f"Failed to import all {failed_count} notes. Check that the deck exists and the model name is correct.",
+                    "total_rows": len(rows),
+                    "imported": 0,
+                    "failed": failed_count,
+                }
 
             return {
-                "success": True,
+                "success": len(successful) > 0,
                 "total_rows": len(rows),
                 "imported": len(successful),
-                "failed": len(notes_to_add) - len(successful),
+                "failed": failed_count,
                 "note_ids": successful,
                 "deck": deck_name,
             }
@@ -284,11 +304,20 @@ def register_import_export_tools(mcp: FastMCP) -> None:
             # Add notes
             note_ids = await actions.add_notes(notes_to_add)
             successful = [nid for nid in note_ids if nid is not None]
+            failed_count = len(notes_to_add) - len(successful)
+
+            if len(successful) == 0:
+                return {
+                    "success": False,
+                    "error": f"Failed to import all {failed_count} notes. Check that the deck exists and the model name is correct.",
+                    "imported": 0,
+                    "failed": failed_count,
+                }
 
             return {
-                "success": True,
+                "success": len(successful) > 0,
                 "imported": len(successful),
-                "failed": len(notes_to_add) - len(successful),
+                "failed": failed_count,
                 "note_ids": successful,
                 "deck": deck_name,
             }

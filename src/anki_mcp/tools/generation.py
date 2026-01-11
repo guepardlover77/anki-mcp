@@ -146,11 +146,21 @@ def register_generation_tools(mcp: FastMCP) -> None:
 
                 note_ids = await actions.add_notes(notes_to_add)
                 successful = [nid for nid in note_ids if nid is not None]
+                failed_count = len(notes_to_add) - len(successful)
+
+                if len(successful) == 0:
+                    return {
+                        "success": False,
+                        "error": f"Failed to create all {failed_count} cards. Check that the deck exists and the model name is correct.",
+                        "created": 0,
+                        "failed": failed_count,
+                        "suggestions": suggestions,
+                    }
 
                 return {
-                    "success": True,
+                    "success": len(successful) > 0,
                     "created": len(successful),
-                    "failed": len(notes_to_add) - len(successful),
+                    "failed": failed_count,
                     "note_ids": successful,
                     "suggestions": suggestions,
                 }
@@ -253,9 +263,18 @@ def register_generation_tools(mcp: FastMCP) -> None:
 
                 note_ids = await actions.add_notes(notes_to_add)
                 successful = [nid for nid in note_ids if nid is not None]
+                failed_count = len(notes_to_add) - len(successful)
+
+                if len(successful) == 0:
+                    return {
+                        "success": False,
+                        "error": f"Failed to create all {failed_count} cloze cards. Check that the deck exists.",
+                        "created": 0,
+                        "cards": cloze_cards,
+                    }
 
                 return {
-                    "success": True,
+                    "success": len(successful) > 0,
                     "created": len(successful),
                     "note_ids": successful,
                     "cards": cloze_cards,
@@ -392,6 +411,13 @@ def register_generation_tools(mcp: FastMCP) -> None:
             note = notes[0]
             fields = {name: field.value for name, field in note.fields.items()}
 
+            # Get deck name from the first card
+            deck_name = "Default"  # Fallback
+            if note.cards:
+                cards_info = await actions.get_cards_info(note.cards[:1])
+                if cards_info:
+                    deck_name = cards_info[0].deck_name
+
             front = fields.get("Front", "")
             back = fields.get("Back", fields.get("Text", ""))
 
@@ -482,14 +508,14 @@ def register_generation_tools(mcp: FastMCP) -> None:
 
                     if s["type"] == "cloze":
                         notes_to_add.append(NoteInput(
-                            deckName=note.model_name,  # Use same deck
+                            deckName=deck_name,  # Use same deck as original note
                             modelName="Cloze",
                             fields={"Text": s["text"]},
                             tags=note.tags,
                         ))
                     else:
                         notes_to_add.append(NoteInput(
-                            deckName=note.model_name,
+                            deckName=deck_name,  # Use same deck as original note
                             modelName="Basic",
                             fields={"Front": s["front"], "Back": s["back"]},
                             tags=note.tags,
@@ -579,12 +605,22 @@ def register_generation_tools(mcp: FastMCP) -> None:
 
             note_ids = await actions.add_notes(notes_to_add)
             successful = [nid for nid in note_ids if nid is not None]
+            failed_count = len(notes_to_add) - len(successful)
+
+            if len(successful) == 0:
+                return {
+                    "success": False,
+                    "error": f"Failed to create all {failed_count} cards. Check that the deck exists and the model names are correct.",
+                    "total": len(cards),
+                    "created": 0,
+                    "failed": failed_count,
+                }
 
             return {
-                "success": True,
+                "success": len(successful) > 0,
                 "total": len(cards),
                 "created": len(successful),
-                "failed": len(notes_to_add) - len(successful),
+                "failed": failed_count,
                 "note_ids": successful,
                 "deck": deck_name,
             }

@@ -5,6 +5,7 @@ from mcp.server.fastmcp import FastMCP
 from anki_mcp.client.base import AnkiConnectError
 from anki_mcp.client.models import NoteInput
 from anki_mcp.server import get_anki_actions
+from anki_mcp.validation import NoteValidator, ValidationError, format_error_response
 
 
 def register_note_tools(mcp: FastMCP) -> None:
@@ -52,6 +53,13 @@ def register_note_tools(mcp: FastMCP) -> None:
         try:
             actions = get_anki_actions()
 
+            # Validate inputs before attempting to add note
+            validator = NoteValidator(actions)
+            try:
+                await validator.validate_note_input(deck_name, model_name, fields)
+            except ValidationError as e:
+                return format_error_response(e, "Failed to add note")
+
             options = None
             if allow_duplicate:
                 options = {"allowDuplicate": True}
@@ -65,6 +73,17 @@ def register_note_tools(mcp: FastMCP) -> None:
             )
 
             note_id = await actions.add_note(note)
+
+            if note_id is None:
+                return {
+                    "success": False,
+                    "error": "Failed to add note. This may indicate a duplicate note or other issue.",
+                    "suggestions": [
+                        "Check if a similar note already exists",
+                        "Try setting allow_duplicate=True if duplicates are intentional",
+                    ],
+                }
+
             return {
                 "success": True,
                 "note_id": note_id,
@@ -73,7 +92,12 @@ def register_note_tools(mcp: FastMCP) -> None:
                 "message": "Note added successfully",
             }
         except AnkiConnectError as e:
-            return {"error": str(e)}
+            return {
+                "success": False,
+                "error": e.message,
+                "suggestions": e.suggestions,
+                "error_type": "connection",
+            }
 
     @mcp.tool()
     async def add_notes_batch(
@@ -129,13 +153,23 @@ def register_note_tools(mcp: FastMCP) -> None:
             successful = sum(1 for nid in note_ids if nid is not None)
             failed = len(note_ids) - successful
 
+            if successful == 0:
+                return {
+                    "success": False,
+                    "error": f"Failed to add all {failed} notes. Check that the deck exists, the model name is correct, and all required fields are provided.",
+                    "note_ids": note_ids,
+                    "total": len(note_ids),
+                    "successful": 0,
+                    "failed": failed,
+                }
+
             return {
-                "success": True,
+                "success": successful > 0,
                 "note_ids": note_ids,
                 "total": len(note_ids),
                 "successful": successful,
                 "failed": failed,
-                "message": f"Added {successful} notes, {failed} failed",
+                "message": f"Added {successful} notes" + (f", {failed} failed" if failed > 0 else ""),
             }
         except AnkiConnectError as e:
             return {"error": str(e)}

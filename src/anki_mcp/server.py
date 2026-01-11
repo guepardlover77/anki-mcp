@@ -27,8 +27,22 @@ class AnkiContext:
             self._initialized = True
 
     async def initialize(self) -> None:
-        """Initialize the Anki client."""
+        """Initialize the Anki client and validate connection."""
         self._ensure_initialized()
+
+        # Validate connection on startup
+        if self._client:
+            if not await self._client.is_connected():
+                # Don't fail hard - just log warning
+                # This allows the server to start even if Anki isn't running
+                # Tools will provide clear error messages when Anki is needed
+                import sys
+
+                print(
+                    "WARNING: Cannot connect to AnkiConnect. "
+                    "Please ensure Anki is running with AnkiConnect add-on installed.",
+                    file=sys.stderr,
+                )
 
     async def cleanup(self) -> None:
         """Cleanup resources."""
@@ -100,6 +114,8 @@ def create_server() -> FastMCP:
     from anki_mcp.tools.sync import register_sync_tools
     from anki_mcp.tools.import_export import register_import_export_tools
     from anki_mcp.tools.generation import register_generation_tools
+    from anki_mcp.tools.pdf_qcm import register_pdf_qcm_tools
+    from anki_mcp.tools.pdf_course import register_pdf_course_tools
     from anki_mcp.resources.base import register_resources
     from anki_mcp.prompts.base import register_prompts
 
@@ -122,6 +138,8 @@ def create_server() -> FastMCP:
 
     # Generation (priority)
     register_generation_tools(mcp)
+    register_pdf_qcm_tools(mcp)
+    register_pdf_course_tools(mcp)
 
     # Resources
     register_resources(mcp)

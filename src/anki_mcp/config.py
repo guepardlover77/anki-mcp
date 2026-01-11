@@ -30,8 +30,12 @@ class Settings(BaseSettings):
         description="AnkiConnect API key (if configured)",
     )
     timeout: float = Field(
-        default=30.0,
-        description="HTTP timeout in seconds",
+        default=10.0,
+        description="HTTP timeout in seconds for regular operations",
+    )
+    sync_timeout: float = Field(
+        default=60.0,
+        description="HTTP timeout in seconds for sync operations",
     )
 
     # Server settings

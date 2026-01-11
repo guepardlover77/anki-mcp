@@ -6,7 +6,9 @@
       "Bash(python -m anki_mcp:*)",
       "Bash(pip install:*)",
       "Bash(python:*)",
-      "Bash(initialized\" errors in MCP tools.\n\nChanges:\n- Add _ensure_initialized\\(\\) method for lazy loading\n- Initialize context automatically on first property access\n- Remove dependency on explicit async initialization\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(initialized\" errors in MCP tools.\n\nChanges:\n- Add _ensure_initialized\\(\\) method for lazy loading\n- Initialize context automatically on first property access\n- Remove dependency on explicit async initialization\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(pip uninstall:*)",
+      "Bash(pip show:*)"
     ]
   }
 }
